@@ -1,0 +1,77 @@
+# ~/.tmuxinator/vagrant-example-ansible.yml
+name: vagrant-example-ansible
+root: <%= ENV["PROJECTS"] %>/vagrant/vagrant-example-ansible
+tmux_options: -2
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+pre:
+    - make environment
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
+# startup_window: logs
+
+# Controls whether the tmux session should be attached to automatically. Defaults to true.
+# attach: false
+
+# Runs after everything. Use it to attach to tmux with custom options etc.
+# post: tmux -CC attach -t vagrant-example-ansible
+
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - editor:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+            - <%= ENV["EDITOR"] %>
+        - docker:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+  - python:
+      layout: main-vertical
+      panes:
+        - python:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+            - ipython
+  - databases:
+      layout: main-vertical
+      panes:
+        - postgresql:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+        - shell:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+  - docker:
+      layout: main-vertical
+      panes:
+        - docker:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+        - shell:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+  - tools:
+      layout: main-vertical
+      panes:
+        - watch:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+            - make watch
+        - grip:
+            - pyenv activate vagrant-example-ansible
+            - gvm pkgset use vagrant-example-ansible
+            - make grip
