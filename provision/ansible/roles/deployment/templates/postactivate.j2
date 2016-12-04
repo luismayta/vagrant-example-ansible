@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Django settings
+export SECRET_KEY='{{ app.vars.key.secret }}'
+
+export DB_URL='{{ app.vars.url.db }}'
+export DB_TEST_URL='{{ app.vars.url.db_test }}'
+
+export CACHE_URL='{{ app.vars.url.redis }}'
+# Media url
+export BASE_URL='{{ app.vars.url.media }}'
+
+export MEDIA_URL='{{ app.vars.url.media }}'
+# Static url
+export STATIC_URL='{{ app.vars.url.static }}'
+
+export BROKER_URL='{{ app.vars.url.broker }}'
+
+export MANDRILL_API_KEY='{{ app.vars.key.mandrill }}'
+
+# AWS S3.
+export AWS_STORAGE_BUCKET_NAME='{{ app.vars.aws.storage_bucket_name }}'
+export AWS_ACCESS_KEY_ID='{{ app.vars.aws.access_key_id }}'
+export AWS_SECRET_ACCESS_KEY='{{ app.vars.aws.secret_access_key }}'
+export BASE_URL='{{ app.vars.url.base }}'
+
+
+# config celery
+
+export SCHEDULER_HOUR=8
+export SCHEDULER_MINUTE=0
+
+# redis
+export DJANGO_REDIS_IGNORE_EXCEPTIONS='{{ app.vars.django.redis.ignore.exceptions }}'
+
+# Directories
+
+export DIR_LOGS_APPS='{{ dir_logs_apps }}'
+
+# single beat
+
+export SINGLE_BEAT_REDIS_SERVER='{{ app.vars.url.beat_redis_server }}'
+export SINGLE_BEAT_IDENTIFIER="celery-beat"

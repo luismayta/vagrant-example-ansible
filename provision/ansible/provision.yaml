@@ -1,0 +1,38 @@
+---
+# Ansible playbook for a example
+#
+# @author dgnest (2016).
+
+- name: Common stuff for all the server
+  hosts: all
+  sudo: True
+  gather_facts: True
+  roles:
+    - contrib/dgnest.ntp
+    - { role: contrib/dgnest.authorization, when: "user != 'vagrant'" }
+    - contrib/dgnest.common
+  tags:
+    - all
+    - common
+    - authorization
+
+- name: execute roles dependences
+  hosts: webservers
+  gather_facts: True
+  sudo: True
+  roles:
+    - { role: contrib/dgnest.nodejs, when: "user == 'vagrant'" }
+    - { role: rubystatic, when: "user == 'vagrant'" }
+    - contrib/dgnest.nginx
+
+- name: Install PostgreSQL
+  hosts: dbservers
+  gather_facts: True
+  sudo: True
+  roles:
+    - contrib/dgnest.postgresql
+    - contrib/dgnest.rabbitmq
+  tags:
+    - install
+    - databases
+    - postgresql

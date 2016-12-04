@@ -1,0 +1,16 @@
+# Install a role from the Ansible Galaxy
+- src: dgnest.authorization
+- src: dgnest.common
+- src: dgnest.nginx
+- src: dgnest.supervisor
+- src: dgnest.postgresql
+- src: dgnest.uwsgi
+- src: dgnest.python
+- src: dgnest.nodejs
+- src: dgnest.ntp
+
+# Install a role from GitHub
+
+# - name: hadenlabs.superslacker
+#   src: https://github.com/hadenlabs/ansible-role-superslacker
+#   version: origin/master
