@@ -1,0 +1,11 @@
+---
+
+# - name: Migrate database
+#   sudo_user: "{{ user }}"
+#   shell: ".  /home/{{ user }}/.pyenvrunrc &&
+#         cd {{ app_dir }} &&
+#         python manage.py migrate_schemas"
+#   register: migrate_database
+#   tags:
+#     - syncdb
+#     - apps

@@ -1,0 +1,39 @@
+---
+
+- name: Common stuff for all the server
+  hosts: all
+  sudo: yes
+  gather_facts: yes
+  roles:
+    - contrib/dgnest.ntp
+  tags:
+    - all
+    - sync
+
+- name: Configure PostgreSQL
+  hosts: dbservers
+  gather_facts: True
+  sudo: True
+  roles:
+    - contrib/dgnest.postgresql
+    - contrib/dgnest.rabbitmq
+  tags:
+    - install
+    - databases
+    - postgresql
+
+- name: Deploy Application
+  hosts: webservers
+  sudo: yes
+  roles:
+    - contrib/dgnest.common
+    - contrib/dgnest.python
+    - contrib/dgnest.uwsgi
+    - deployment
+    - contrib/dgnest.supervisor
+    - { role: contrib/dgnest.opbeat, when: "user != 'vagrant'" }
+    - { role: contrib/dgnest.cloudflare, when: "user != 'vagrant'" }
+  tags:
+    - webserver
+    - wait
+    - deployment

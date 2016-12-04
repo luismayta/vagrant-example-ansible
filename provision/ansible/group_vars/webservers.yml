@@ -1,0 +1,134 @@
+---
+
+python_pyenv_path: "{{ home }}/pyenv"
+python_pyenv_owner: "{{ user }}"
+python_pyenv_update_git_install: yes
+python_pyenv_python_versions:
+  - "3.5.2"
+  - "2.7.10"
+
+python_pyenv_virtualenvs:
+  - venv_name: "example"
+
+python_pyenv_delete_virtualenvs:
+  - venv_name: "example"
+
+python_pyenv_virtualenvs:
+  - venv_name: "example"
+    py_version: "3.5.2"
+
+python_pyenv_virtualenvs_default: "example"
+virtualenv_path: "{{ python_pyenv_path }}/versions/{{ python_pyenv_virtualenvs_default }}"
+
+python_pyenv_file_requeriments: "{{ apps_path }}/requirements.txt"
+
+python_environment_vars_file: "{{ app_dir_home }}/.pyenvrunrc"
+
+python_environment_dict:
+  BASE_URL: "{{ application_baseurl }}"
+  BROKER_URL: "amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@{{ host_server_rabbitmq }}:{{ rabbitmq_port }}/{{ rabbitmq_vhost }}"
+  MIXPANEL_PROJECT_TOKEN: "{{mixpanel_project_token}}"
+  MIXPANEL_ACTIVE: "{{mixpanel_active}}"
+  IS_SECURE: 'True'
+  DEBUG: "{{ debug }}"
+  SECRET_KEY: "{{ application_secret_key }}"
+  DB_URL: "postgres://{{ postgresql_user }}:{{ postgresql_pass }}@{{ host_server_database }}:{{ postgresql_port }}/{{ postgresql_database_name }}"
+  DB_TEST_URL: "postgres://{{ postgresql_user }}:{{ postgresql_pass }}@{{ host_server_database }}:{{ postgresql_port }}/{{ postgresql_database_test_name }}"
+  SITE_DOMAIN: "{{ site_domain }}"
+  SITE_NAME: "example"
+  MEDIA_URL: "media/"
+  STATIC_URL: "static/"
+  CF_API_EMAIL: "{{ cloudflare_purge_email }}"
+  CF_API_KEY: "{{ cloudflare_purge_key }}"
+  CF_API_CERTKEY: "{{ cloudflare_api_certkey }}"
+  CF_ZONE_NAME: "{{ site_domain }}"
+  CF_ZONE_ID: "{{ cloudflare_purge_zone }}"
+  IP_SERVER: "{{ cloudflare_ip_server }}"
+  AWS_STORAGE_BUCKET_NAME: "{{ aws_bucket_name }}"
+  AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+  AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  OPBEAT_ORGANIZATION_ID: "{{ opbeat_organization_id }}"
+  OPBEAT_APP_ID: "{{ opbeat_app_id }}"
+  OPBEAT_SECRET_TOKEN: "{{ opbeat_secret_token }}"
+
+common_package_dependencies:
+  - "gettext" # package translate ubuntu
+  - "python-yaml"
+
+# Services
+services_states:
+  - name: "nginx"
+    state: "reloaded"
+
+uwsgi_dict:
+    project: "{{ app_name }}"
+    base: "{{ app_dir_home }}"
+    chdir: "{{ app_dir }}"
+    home: "{{ virtualenv_path }}"
+    pythonpath: "{{ app_dir }}"
+    socket: "{{ app_proxypass }}"
+    module: "{{ app_module }}"
+    uid: "{{ user }}"
+    gid: "{{ user }}"
+    master: true
+    vacuum: true
+    virtualenv: "{{ virtualenv_path }}"
+    max_requests: 20000
+    processes: 1
+    threads: 2
+    enable_threads: true
+    # http: ":3097"
+    # touch_reload: "/path/touch/reload"
+    # harakiri: 30
+    # harakiri_verbose: True
+    log_x_forwarded_for: true
+    # stats: "127.0.0.1:9000"
+    log_5xx: true
+    log_slow: 30000
+    # shared_socket: ":80"
+    buffer_size: "8096"
+
+supervisor_path_apps: "{{ app_dir_home }}/supervisor"
+
+supervisor_apps:
+  - program: celery
+    application_environment: "{{ python_environment_vars_file }}"
+    application_path: "{{ app_dir }}"
+    execution: "celery worker -A {{ app_name }} --loglevel=info"
+  # - program: celery-beat
+  #   application_environment: "{{ python_environment_vars_file }}"
+  #   application_path: "{{ app_dir }}"
+  #   execution: "celery beat -A {{ app_name }} --loglevel=info"
+
+supervisor_programs:
+  - program: uwsgi
+    command: "{{ app_dir_home }}/uwsgi.sh"
+    user: "{{user}}"
+    numprocs: 1
+    instalautostart: true
+    autorestart: true
+    startsecs: 10
+    priority: 990
+  - program: celery
+    command: "{{ supervisor_path_apps }}/celery.sh"
+    user: "{{user}}"
+    numprocs: 1
+    instalautostart: true
+    autorestart: true
+    startsecs: 10
+    priority: 990
+  # - program: celery-beat
+  #   command: "{{ supervisor_path_apps }}/celery-beat.sh"
+  #   user: "{{user}}"
+  #   numprocs: 1
+  #   instalautostart: true
+  #   autorestart: true
+  #   startsecs: 10
+  #   priority: 990
+
+# Nginx
+nginx_project_name: "{{ app_name }}"
+nginx_port: "{{ port_http }}"
+nginx_uwsgi_enabled: True
+nginx_path_static: "{{ app_dir_static }}"
+nginx_path_media: "{{ app_dir_media }}"
