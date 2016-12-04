@@ -1,0 +1,33 @@
+---
+name_project: example
+environment: local
+
+dnsmasq_domain: ".example.vm"
+dnsmasq_ip: "192.168.10.20"
+name_inventory: production
+path_inventory: provision/ansible/inventories/sandbox/production
+vagrant:
+  limit: ''
+  verbose: 'vvvv'
+  sudo: true
+
+ansible_vars:
+  environment: local
+  debug: 'True'
+  site_domain: 'example.vm'
+  user: 'vagrant'
+
+servers:
+  - name: 1.web.example.vm
+    ip: 192.168.10.20
+    box: ubuntu-14.4
+    url: https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
+    hostname: 1-web-example.vm
+    ram: 512
+
+  - name: 1.db.master.example.vm
+    ip: 192.168.20.10
+    box: ubuntu-14.4
+    url: https://github.com/kraksoft/vagrant-box-ubuntu/releases/download/14.04/ubuntu-14.04-amd64.box
+    hostname: 1-db-master-example.vm
+    ram: 512

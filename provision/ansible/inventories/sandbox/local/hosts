@@ -1,0 +1,22 @@
+1.local.example.vm ansible_ssh_host=10.10.10.20 ansible_ssh_port=22 ansible_ssh_private=10.10.10.20
+
+# Groups
+
+[webservers]
+1.local.example.vm
+
+[lbservers]
+1.local.example.vm
+
+[dbservers:children]
+dbservers.masters
+dbservers.slaves
+
+[dbservers.masters]
+1.local.example.vm
+
+[dbservers.slaves]
+# 1.db.master.example.vm
+
+[cacheservers]
+1.local.example.vm

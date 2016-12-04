@@ -1,0 +1,23 @@
+1.db.master.example.vm ansible_ssh_host=192.168.20.10 ansible_ssh_port=22 ansible_ssh_private=192.168.20.10
+1.web.example.vm ansible_ssh_host=192.168.10.20 ansible_ssh_port=22 ansible_ssh_private=192.168.10.20
+
+# Groups
+
+[webservers]
+1.web.example.vm
+
+[lbservers]
+1.web.example.vm
+
+[dbservers:children]
+dbservers.masters
+dbservers.slaves
+
+[dbservers.masters]
+1.db.master.example.vm
+
+[dbservers.slaves]
+# 1.db.slave.example.vm
+
+[cacheservers]
+1.db.master.example.vm

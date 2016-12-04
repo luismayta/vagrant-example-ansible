@@ -1,0 +1,91 @@
+---
+
+# AWS
+aws_bucket_name: 'example-dev'
+aws_access_key: ""
+aws_secret_access_key: ""
+
+debug: 'True'
+site_domain: "example.com"
+
+host_server_database: "{{ hostvars['1.db.master.example.vm']['ansible_ssh_private'] }}"
+host_server_rabbitmq: "{{ host_server_database }}"
+
+git_tag_deployment: develop
+
+application_baseurl: "/"
+app_port: 9000
+app_proxypass: "127.0.0.1:{{ app_port }}"
+app_name: "example"
+app_module: "{{ app_name }}.wsgi:application"
+app_name_path: "src"
+app_db_name: "example"
+app_db_test_name: "test_example"
+home: "{{ app_dir_home }}"
+apps_path: "{{ app_dir_home }}/{{ git.name }}"
+app_dir_home: "/home/{{ user }}"
+app_dir: "{{ apps_path }}/{{ app_name_path }}"
+app_dir_static: "{{ app_dir }}/staticfiles"
+app_dir_media: "{{ app_dir }}/media"
+
+# cloudflare
+cloudflare_zone_name: ""
+cloudflare_purge_zone: ""
+cloudflare_purge_email: ""
+cloudflare_purge_key: ""
+cloudflare_api_certkey: ''
+cloudflare_ip_server: '20.20.20.20'
+
+common_package_dependencies:
+  - "vim"
+  - "git"
+
+common_create_files:
+  - path: "{{ app_dir_home }}/.ssh"
+    state: "directory"
+    owner: "{{ user }}"
+  - path: "{{ apps_path }}/src/assets"
+    state: "directory"
+    owner: "{{ user }}"
+
+# opbeat
+opbeat_organization_id: ""
+opbeat_app_id: ""
+opbeat_secret_token: ""
+opbeat_project_path: "{{ app_dir }}"
+
+authorization_key_dir: "/Volumes/Home/private/key_file/example"
+authorization:
+    key_dir: "{{ authorization_key_dir }}"
+    key_files:
+      - key: id_rsa
+        src: "{{ authorization_key_dir }}/id_rsa"
+        path: "{{ app_dir_home }}/.ssh/id_rsa"
+        permissions: 0600
+        owner: "{{ user }}"
+        state: file
+      - key: id_rsa.pub
+        src: "{{ authorization_key_dir }}/id_rsa.pub"
+        path: "{{ app_dir_home }}/.ssh/id_rsa.pub"
+        permissions: 0600
+        state: file
+        owner: "{{ user }}"
+
+postgresql_port: 5432
+postgresql_user: morgan
+postgresql_pass: P@ssw0rd
+postgresql_database_name: "{{ app_db_name }}"
+postgresql_database_test_name: "{{ app_db_test_name }}"
+
+# RabbitMQ
+
+rabbitmq_user: test_rabbitmq
+rabbitmq_password: _test_rabbitmq
+rabbitmq_vhost: myvhost
+rabbitmq_port: 5672
+
+# Red
+remote_host: "127.0.0.1"
+app_version: "1.0.0"
+
+port_http: 80
