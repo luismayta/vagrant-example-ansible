@@ -50,3 +50,6 @@ Made with :heart: ️:coffee:️ and :pizza: by [luismayta][link-author].
 [link-luis]: https://github.com/luismayta
 [link-contributors]: AUTHORS
 [link-author]: https://github.com/luismayta
+
+
+<!-- Security scan triggered at 2025-09-02 15:59:35 -->
